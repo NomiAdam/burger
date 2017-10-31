@@ -14,6 +14,10 @@ export const store = new Vuex.Store({
         },
         toggleSeeds(state) {
             state.seeds = !state.seeds;
+        },
+        removeIngredient(state, payload) {
+            const newArray = state.ingredients.filter(elem => payload != elem.key);
+            state.ingredients = newArray;
         }
     },
     actions: {
@@ -22,6 +26,9 @@ export const store = new Vuex.Store({
         },
         toggleSeeds({ commit }) {
             commit("toggleSeeds");
+        },
+        removeIngredient({ commit }, payload) {
+            commit("removeIngredient", payload);
         }
     },
     getters: {
@@ -30,6 +37,12 @@ export const store = new Vuex.Store({
         },
         getSeeds(state) {
             return state.seeds;
+        },
+        getTotalPrice(state) {
+            let price = 10;
+            state.ingredients.forEach(elem => price += elem.price);
+            if (state.seeds) price += 5;
+            return price;
         }
     }
 });

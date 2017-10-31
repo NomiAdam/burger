@@ -1,11 +1,14 @@
 <template>
-    <div class="wrapper">
-        <div class="top">
-            <div v-if="seeds" class="seed"></div>
-        </div>
-        <div v-for="ingredient in ingredients" :key="ingredient" :class="ingredient"></div>
-        <div class="bottom"></div>
+  <div class="wrapper">
+    <h1>Total price: {{totalPrice}}</h1>
+    <div class="top">
+      <div v-if="seeds" class="seed"></div>
     </div>
+    <transition-group name="scale">
+      <div v-for="ingredient in ingredients" :key="ingredient.key" :class="ingredient.type" @click="remove(ingredient.key)"></div>
+    </transition-group>
+    <div class="bottom"></div>
+  </div>
 </template>
 
 <script>
@@ -13,12 +16,20 @@ export default {
   data() {
     return {};
   },
+  methods: {
+    remove(id) {
+      this.$store.dispatch("removeIngredient", id);
+    }
+  },
   computed: {
     ingredients() {
       return this.$store.getters.getIngredients;
     },
     seeds() {
       return this.$store.getters.getSeeds;
+    },
+    totalPrice() {
+      return this.$store.getters.getTotalPrice;
     }
   }
 };
@@ -29,6 +40,15 @@ export default {
   height: 480px;
   width: 480px;
   margin: 20px auto;
+}
+
+.scale-enter-active,
+.scale-leave-active {
+  transition: all 0.5s;
+}
+.scale-enter,
+.scale-leave-to {
+  transform: scale(0);
 }
 
 .top {
