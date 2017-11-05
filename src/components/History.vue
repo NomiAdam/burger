@@ -1,54 +1,65 @@
 <template>
-  <div class="wrapper">
-    <h3>Total price: {{totalPrice}}</h3>
-    <div class="top">
-      <div v-if="seeds" class="seed"></div>
-    </div>
-    <transition-group name="scale">
-      <div v-for="ingredient in ingredients" :key="ingredient.id" :class="ingredient.type" @click="remove(ingredient.id)"></div>
-    </transition-group>
-    <div class="bottom"></div>
-  </div>
+  <v-container>
+    <v-layout row>
+      <v-flex xs12>
+        <v-card v-for="burger in burgers" :key="burger.id" style="width:100%">
+          <div class="wrapper">
+            <div class="top">
+              <div v-if="burger.seeds" class="seed"></div>
+            </div>
+            <div v-for="(item, key) in burger.ingredients" :key="key" :class="item">&nbsp;</div>
+            <div class="bottom"></div>
+          </div>
+          <v-card-title primary-title>
+            <div>
+              <h3 class="headline mb-0">{{burger.id}}</h3>
+            </div>
+          </v-card-title>
+          <h4 style="text-decoration: underline">Ingredients</h4>
+          <ul>
+            <li v-for="(item, key) in burger.ingredients" :key="key">{{item}}</li>
+          </ul>
+          <v-card-actions>
+            <!--TODO - make share button work-->
+            <v-btn flat color="orange">Share</v-btn>
+            <v-btn flat color="orange" @click="deleteFromFirebase(burger.id)">Delete</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
+
 
 <script>
 export default {
-  data() {
-    return {};
-  },
-  methods: {
-    remove(id) {
-      this.$store.dispatch("removeIngredient", id);
+  computed: {
+    burgers() {
+      return this.$store.getters.getBurgers;
     }
   },
-  computed: {
-    ingredients() {
-      return this.$store.getters.getIngredients;
-    },
-    seeds() {
-      return this.$store.getters.getSeeds;
-    },
-    totalPrice() {
-      return this.$store.getters.getTotalPrice;
+  methods: {
+    deleteFromFirebase(payload) {
+      this.$store.dispatch("deleteFromFirebase", payload);
     }
   }
 };
 </script>
 
 <style scoped>
+* {
+  text-align: center;
+  width: 100%;
+}
+ul {
+  list-style: none;
+  padding: 10px;
+}
 .wrapper {
-  height: 480px;
-  width: 480px;
-  margin: 20px auto;
-}
-
-.scale-enter-active,
-.scale-leave-active {
-  transition: all 0.5s;
-}
-.scale-enter,
-.scale-leave-to {
-  transform: scale(0);
+  height: 250px;
+  width: 200px;
+  margin: auto;
+  padding-top: 50px;
 }
 
 .top {
@@ -139,3 +150,4 @@ export default {
   margin: auto;
 }
 </style>
+

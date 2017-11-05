@@ -5,7 +5,8 @@
     <button @click="addIngredient('chesse')">Přidat Sýr</button>
     <button @click="addIngredient('meat')">Přidat Maso</button>
     <button @click="toggleSeeds">Přidat/Odebrat semínka</button>
-    <h2>Click on ingredient to delete it from burger</h2>
+    <button @click="saveBurger">Kup burger</button>
+    <h5>Click on ingredient to delete it from burger</h5>
   </div>
 </template>
 
@@ -33,7 +34,7 @@ export default {
           break;
       }
       const item = {
-        key: date.getTime(),
+        id: date.getTime(),
         type: payload,
         price: price
       };
@@ -41,6 +42,16 @@ export default {
     },
     toggleSeeds() {
       this.$store.dispatch("toggleSeeds");
+    },
+    saveBurger() {
+      if (this.$store.getters.getIngredients.length !== 0) {
+        this.$store.dispatch("saveBurger");
+      } else {
+        console.log("You have to choose ingredients");
+      }
+    },
+    goTo() {
+      this.$router.push("/history");
     }
   }
 };
@@ -49,6 +60,7 @@ export default {
 <style scoped>
 button {
   margin: 5px;
+  padding: 5px;
   border-radius: 0;
   border: 1px solid black;
   background-color: transparent;
